@@ -17,9 +17,9 @@ import com.davidalexanderkelly.game.SpaceGamePrototype;
 import com.davidalexanderkelly.game.Screens.PlayScreen;
 
 public class Player extends Sprite{
-	public static int width = 75;
-	public static int height = 75;
-	public static int xOffset = 0;
+	public static int width = 60;
+	public static int height = 80;
+	public static int xOffset = 10;
 	private int currentAnimation;
 	
 	private float stateTime = 0;
@@ -90,15 +90,7 @@ public class Player extends Sprite{
 	
 	public void update(float deltaTime, SpriteBatch batch) {
 		
-		stateTime += Gdx.graphics.getDeltaTime();
-		
-		if(animations[currentAnimation].getKeyFrameIndex(stateTime) != stepIndex){
-            if(animations[currentAnimation].getKeyFrameIndex(stateTime) == 0 || animations[currentAnimation].getKeyFrameIndex(stateTime) == 12) {
-                stepIndex = animations[currentAnimation].getKeyFrameIndex(stateTime);
-                stepSound.play();
-            }
-		}
-		
+		stateTime += Gdx.graphics.getDeltaTime();				
 		currentFrame = (TextureRegion) animations[currentAnimation].getKeyFrame(stateTime, true);
 
         batch.begin();
@@ -126,9 +118,14 @@ public class Player extends Sprite{
 	}
 	
 	public void setCurrentAnimation(int currentAnimation) {
-		this.currentAnimation = currentAnimation;
-		stateTime = 0;
-        stepIndex = 0;
+		if(getCurrentAnimation() != currentAnimation) {
+			this.currentAnimation = currentAnimation;
+			stateTime = 0;
+	        stepIndex = 0;
+		}
+			
+			
+		
 	}
 	
 	public int getCurrentAnimation() {

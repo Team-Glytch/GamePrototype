@@ -27,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.davidalexanderkelly.game.SpaceGamePrototype;
@@ -70,7 +71,7 @@ public class PlayScreen implements Screen {
 		//create camera used to follow player
 		gamecam = new OrthographicCamera();	
 		//create a FitViewport to maintain virtual aspect ratio despite screen size
-		gamePort = new FitViewport(SpaceGamePrototype.V_WIDTH / SpaceGamePrototype.PixelsPerMetre, SpaceGamePrototype.V_HEIGHT / SpaceGamePrototype.PixelsPerMetre, gamecam);
+		gamePort = new ExtendViewport(SpaceGamePrototype.V_WIDTH / SpaceGamePrototype.PixelsPerMetre, SpaceGamePrototype.V_HEIGHT / SpaceGamePrototype.PixelsPerMetre, gamecam);
 		
 		hud = new Hud(game.batch);
 		
@@ -81,7 +82,7 @@ public class PlayScreen implements Screen {
 		
 		//Game camera position and zoom level
 		gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() /2,0);
-		gamecam.zoom = 0.225f;
+		gamecam.zoom = 0.175f;
 		
 		//Creates the collision world
 		world = new World(new Vector2(0,0), true);
@@ -132,7 +133,7 @@ public class PlayScreen implements Screen {
 			player.box2dBody.applyLinearImpulse(new Vector2(0.15f, 0f), player.box2dBody.getWorldCenter(), true);
 			if(Player.width < 0) {
 				Player.width*=-1;
-				Player.xOffset = 0;
+				Player.xOffset = 10;
 			}				
 		} else if (moveLeft && player.box2dBody.getLinearVelocity().x > -0.7f && !moveRight) {
 			player.box2dBody.applyLinearImpulse(new Vector2(-0.15f, 0f), player.box2dBody.getWorldCenter(), true);
@@ -144,11 +145,13 @@ public class PlayScreen implements Screen {
 			player.box2dBody.setLinearVelocity(0f, player.box2dBody.getLinearVelocity().y);
 		}
 		
-		if(player.box2dBody.getLinearVelocity().y == 0f && player.box2dBody.getLinearVelocity().x == 0) {
-			player.setCurrentAnimation(IDLE);
-		}
-		else if(player.getCurrentAnimation() != RUNNING){
+		if(player.box2dBody.getLinearVelocity().y != 0f || player.box2dBody.getLinearVelocity().x != 0f) {
 			player.setCurrentAnimation(RUNNING);
+			
+		}
+		else if(player.box2dBody.getLinearVelocity().y == 0f && player.box2dBody.getLinearVelocity().x == 0f){
+			player.setCurrentAnimation(IDLE);
+
 		}
 		
 	}
