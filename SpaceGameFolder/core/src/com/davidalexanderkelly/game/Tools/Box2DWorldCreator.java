@@ -24,7 +24,7 @@ public class Box2DWorldCreator {
 			
 			bodyDefinition.type = BodyDef.BodyType.StaticBody;
 			bodyDefinition.position.set((rect.getX() + rect.getWidth() / 2) / SpaceGamePrototype.PixelsPerMetre, (rect.getY() + rect.getHeight() / 2) / SpaceGamePrototype.PixelsPerMetre);
-			
+
 			body = world.createBody(bodyDefinition);
 			shape.setAsBox(rect.getWidth() / 2 / SpaceGamePrototype.PixelsPerMetre, rect.getHeight() /2 / SpaceGamePrototype.PixelsPerMetre);
 			fixtureDefinition.shape = shape;

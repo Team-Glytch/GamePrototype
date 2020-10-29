@@ -31,10 +31,11 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.davidalexanderkelly.game.SpaceGamePrototype;
+import com.davidalexanderkelly.game.Entities.Player;
 import com.davidalexanderkelly.game.Scenes.Hud;
-import com.davidalexanderkelly.game.Sprites.Player;
 import com.davidalexanderkelly.game.Tools.Assets;
 import com.davidalexanderkelly.game.Tools.Box2DWorldCreator;
+import com.davidalexanderkelly.game.Tools.pathfindingWorldCreator;
 
 public class PlayScreen implements Screen {
 	//Reference to Game, used to set screen
@@ -91,6 +92,7 @@ public class PlayScreen implements Screen {
 		collisionRenderer = new Box2DDebugRenderer();
 		
 		new Box2DWorldCreator(world,map);
+		new pathfindingWorldCreator(map);
 		
 		batch = new SpriteBatch();
 
@@ -168,6 +170,8 @@ public class PlayScreen implements Screen {
 		//Game camera follows the player
 		gamecam.position.x = player.box2dBody.getPosition().x;
 		gamecam.position.y = player.box2dBody.getPosition().y;
+		//System.out.println(player.box2dBody.getPosition().x);
+		//System.out.println(player.box2dBody.getPosition().y);
 		gamecam.update();
 		
 		
