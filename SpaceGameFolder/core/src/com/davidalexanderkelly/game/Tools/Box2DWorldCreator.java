@@ -10,9 +10,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.davidalexanderkelly.game.SpaceGamePrototype;
+import com.davidalexanderkelly.game.Screens.PlayScreen;
 
 public class Box2DWorldCreator {
-	public Box2DWorldCreator(World world, TiledMap map) {
+	public Box2DWorldCreator(PlayScreen screen) {
+		World world = screen.getWorld();
+		TiledMap map  = screen.getMap();
 		
 		BodyDef bodyDefinition = new BodyDef();
 		PolygonShape shape = new PolygonShape();
