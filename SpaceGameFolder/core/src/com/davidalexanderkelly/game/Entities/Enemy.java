@@ -7,7 +7,6 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -17,17 +16,17 @@ import com.badlogic.gdx.utils.Array;
 import com.davidalexanderkelly.game.SpaceGamePrototype;
 import com.davidalexanderkelly.game.Entities.Behaviors.Node;
 import com.davidalexanderkelly.game.Entities.Behaviors.Pathfinding;
+import com.davidalexanderkelly.game.Entities.TileObjects.Task;
 import com.davidalexanderkelly.game.Screens.PlayScreen;
-import com.davidalexanderkelly.game.Tools.InteractableWorldCreator;
-import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
 
 public class Enemy extends Sprite{
 	public enum State{IDLE,RUNNING};
 	public State currentState;
 	public State previousState;
+	
+	private float x;
+	private float y;
 
-
-	private InteractableWorldCreator interactables;
 	private Animation<TextureRegion> playerIdle;
 	private Animation<TextureRegion> playerRun;
 	private float stateTimer;
@@ -42,14 +41,18 @@ public class Enemy extends Sprite{
 	private ArrayList<Node> path;
 	
 	private boolean moving;
+	private boolean moved;
 	
 
 	
-	public Enemy(World world,PlayScreen screen) {
+	public Enemy(World world,PlayScreen screen, float x, float y) {
 		
 		super(screen.getAtlas().findRegion("enemyIdle"));
 		this.screen = screen;
 		this.world = world;
+		this.x = x;
+		this.y = y;
+		
 		currentState = State.IDLE;
 		previousState = State.IDLE;
 		stateTimer = 0;
@@ -70,11 +73,16 @@ public class Enemy extends Sprite{
 				
 		defineEnemy();
 		setBounds(0,0,19 / SpaceGamePrototype.PixelsPerMetre, 23 / SpaceGamePrototype.PixelsPerMetre);
-		setPath(0,1);
+		
+		moved = false;
 		
 	}
 	
 	public void update(float deltaTime) {
+		if(moved == false) {
+			setPath(0,1);
+			moved = true;
+		}
 		
 		setPosition((box2dBody.getPosition().x - getWidth()/2),(box2dBody.getPosition().y - getHeight()/4) );
 		setRegion(getFrame(deltaTime));
@@ -163,21 +171,28 @@ public class Enemy extends Sprite{
 	}
 	
 	public void setPath(int start, int end) {
+		System.out.println("Ok");
 		moving = false;
 		pathfinding = new Pathfinding();
-		List<Node> interactables = screen.interactables.getLocations();
+		List<Node> interactables = new ArrayList<Node>();
+		interactables.add(new Node(box2dBody.getPosition()));
+		for(Task task : screen.creator.getTasks()) {
+			interactables.add(new Node(task.getPosition()));
+		}		
+		
 		path = pathfinding.findPath(interactables.get(start),interactables.get(end),screen.pathfinder);
+		
 	}
 	
 	
 	public void defineEnemy() {
 		BodyDef bodyDefinition = new BodyDef();
-		bodyDefinition.position.set(screen.interactables.getLocations().get(0).getWorldPosition().x,screen.interactables.getLocations().get(0).getWorldPosition().y);
+		bodyDefinition.position.set(x,y);
 		bodyDefinition.type = BodyDef.BodyType.DynamicBody;
 		box2dBody = world.createBody(bodyDefinition);
 		FixtureDef fixtureDefinition = new FixtureDef();
 		CircleShape shape = new CircleShape();
-		shape.setRadius(0 / SpaceGamePrototype.PixelsPerMetre);
+		shape.setRadius(2 / SpaceGamePrototype.PixelsPerMetre);
 		
 		fixtureDefinition.shape = shape;
 

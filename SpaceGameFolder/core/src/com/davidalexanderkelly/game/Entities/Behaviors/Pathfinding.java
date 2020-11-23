@@ -4,10 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-
-import com.badlogic.gdx.math.Vector2;
-import com.davidalexanderkelly.game.Screens.PlayScreen;
 import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
 
 public class Pathfinding {
@@ -23,6 +19,7 @@ public class Pathfinding {
 	
 	public ArrayList<Node> findPath(Node startPosition,Node goalPosition, PathfindingWorldCreator pathfinder) {
 		this.pathfinder = pathfinder;
+		
 		Node startNode = startPosition;
 		Node endNode =  goalPosition;
 		depth = 0f;
@@ -52,6 +49,7 @@ public class Pathfinding {
 	    	}
 	    	
 	    	for(Node neighbour : pathfinder.getNeighbours(currentNode)){
+	    		
 	    		if(closedSet.contains(neighbour)) {
 	    			
 	    			continue;

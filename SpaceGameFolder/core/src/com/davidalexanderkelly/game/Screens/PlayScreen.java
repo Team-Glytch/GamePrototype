@@ -1,49 +1,31 @@
 package com.davidalexanderkelly.game.Screens;
 
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.davidalexanderkelly.game.SpaceGamePrototype;
 import com.davidalexanderkelly.game.Entities.Enemy;
 import com.davidalexanderkelly.game.Entities.Player;
-import com.davidalexanderkelly.game.Entities.Behaviors.Node;
-import com.davidalexanderkelly.game.Entities.Behaviors.Pathfinding;
 import com.davidalexanderkelly.game.Scenes.Hud;
 import com.davidalexanderkelly.game.Tools.Assets;
 import com.davidalexanderkelly.game.Tools.Box2DWorldCreator;
-import com.davidalexanderkelly.game.Tools.InteractableWorldCreator;
-import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
 import com.davidalexanderkelly.game.Tools.EnemyUpdater;
+import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
+import com.davidalexanderkelly.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 	//Reference to Game, used to set screen
@@ -54,11 +36,7 @@ public class PlayScreen implements Screen {
 	private TextureAtlas atlas;
 	public Texture img;
 	private Skin skin;
-	
-	private static final int IDLE = 0;
-	private static final int RUNNING = 1;
-	
-	
+
 	//Camera and Camera manipulation variables
 	private OrthographicCamera gamecam;
 	private Viewport gamePort;  
@@ -72,15 +50,13 @@ public class PlayScreen implements Screen {
 	//Box2d variables
 	private World world;
 	private Box2DDebugRenderer collisionRenderer;
+	public Box2DWorldCreator creator;
 	
 	public PathfindingWorldCreator pathfinder;
-	public InteractableWorldCreator interactables;
+
 
 	private Assets assets;
 	private Player player;
-	private Enemy enemy;
-
-	
 
 	public PlayScreen(SpaceGamePrototype game) {
 		
@@ -104,19 +80,15 @@ public class PlayScreen implements Screen {
 		
 		//Creates the collision world
 		world = new World(new Vector2(0,0), true);
+		creator = new Box2DWorldCreator(this);
 		
-		interactables = new InteractableWorldCreator(map);
-		interactables.setLocations();
 		
 		pathfinder = new PathfindingWorldCreator(map);
 		pathfinder.setLocations();
-		
-		
-		
+			
 		//allows the rendering of collision boxes
 		collisionRenderer = new Box2DDebugRenderer();
 		
-		new Box2DWorldCreator(this);
 		
 		batch = new SpriteBatch();
 
@@ -126,12 +98,12 @@ public class PlayScreen implements Screen {
 
 		skin = new Skin();
 		skin.addRegions(assets.manager.get("assets/Sprites/Spritepack.atlas", TextureAtlas.class));
-		
-		ArrayList<Node> path = new ArrayList<Node>();
-		
+
 		//creates Player in the world
 		player = new Player(world,this );
-		enemy = new Enemy(world,this);
+		
+		
+		world.setContactListener(new WorldContactListener());
 
 
 				
@@ -179,12 +151,12 @@ public class PlayScreen implements Screen {
 		//updates physics 60 times per second
 		world.step(1/60f,6,2);
 		player.update(deltaTime);
-		EnemyUpdater enemyUpdate = new EnemyUpdater(enemy,deltaTime);
-		enemyUpdate.start();		
+		for(Enemy imposter : creator.getEnemies()) {
+        	imposter.update(deltaTime);	
+        }
 		//Game camera follows the player
 		gamecam.position.x = player.box2dBody.getPosition().x;
 		gamecam.position.y = player.box2dBody.getPosition().y;
-		//System.out.println(player.box2dBody.getPosition());
 		gamecam.update();
 		
 		
@@ -207,10 +179,14 @@ public class PlayScreen implements Screen {
 		//renderer for the collision boxes
 		collisionRenderer.render(world, gamecam.combined);
 		
-		game.batch.setProjectionMatrix(gamecam.combined);
+		game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+		hud.stage.draw();
 		game.batch.begin();
 		player.draw(game.batch);
-		enemy.draw(game.batch);
+		for(Enemy imposter : creator.getEnemies()) {
+			imposter.draw(game.batch);
+		}
+		
 		game.batch.end();
 	}
 	
