@@ -1,12 +1,6 @@
 package com.davidalexanderkelly.game;
 
-
-
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.davidalexanderkelly.game.Screens.PlayScreen;
 
@@ -16,6 +10,11 @@ public class SpaceGamePrototype extends Game {
 	public static final int V_WIDTH = 720;
 	public static final int V_HEIGHT = 720;
 	public static final float PixelsPerMetre = 100;
+	
+	public static final short DEFAULT_BIT = 1;
+	public static final short PLAYER_BIT =2;
+	public static final short TELEPORTER_BIT = 4;
+	public static final short TASK_BIT = 8;
 	
 	public SpriteBatch batch;
 	

@@ -14,5 +14,6 @@ public class EnemyUpdater extends Thread {
 	
 	public void run() {
 		enemy.update(deltaTime);
+		
 	}
 }
