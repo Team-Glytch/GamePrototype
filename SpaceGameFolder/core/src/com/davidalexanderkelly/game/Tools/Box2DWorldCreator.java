@@ -32,6 +32,6 @@ public class Box2DWorldCreator {
 			shape.setAsBox(rect.getWidth() / 2 / SpaceGamePrototype.PixelsPerMetre, rect.getHeight() /2 / SpaceGamePrototype.PixelsPerMetre);
 			fixtureDefinition.shape = shape;
 			body.createFixture(fixtureDefinition);
-		};
+		}
 	}
 }
