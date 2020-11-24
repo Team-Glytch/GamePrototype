@@ -18,8 +18,8 @@ import com.davidalexanderkelly.game.SpaceGamePrototype;
 import com.davidalexanderkelly.game.Entities.Behaviors.Node;
 import com.davidalexanderkelly.game.Entities.Behaviors.Pathfinding;
 import com.davidalexanderkelly.game.Screens.PlayScreen;
-import com.davidalexanderkelly.game.Tools.InteractableWorldCreator;
 import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
+import com.davidalexanderkelly.game.Tools.TaskWorldCreator;
 
 public class Enemy extends Sprite{
 	public enum State{IDLE,RUNNING};
@@ -27,7 +27,7 @@ public class Enemy extends Sprite{
 	public State previousState;
 
 
-	private InteractableWorldCreator interactables;
+	private TaskWorldCreator tasks;
 	private Animation<TextureRegion> playerIdle;
 	private Animation<TextureRegion> playerRun;
 	private float stateTimer;
@@ -165,14 +165,14 @@ public class Enemy extends Sprite{
 	public void setPath(int start, int end) {
 		moving = false;
 		pathfinding = new Pathfinding();
-		List<Node> interactables = screen.interactables.getLocations();
+		List<Node> interactables = screen.tasks.getLocations();
 		path = pathfinding.findPath(interactables.get(start),interactables.get(end),screen.pathfinder);
 	}
 	
 	
 	public void defineEnemy() {
 		BodyDef bodyDefinition = new BodyDef();
-		bodyDefinition.position.set(screen.interactables.getLocations().get(0).getWorldPosition().x,screen.interactables.getLocations().get(0).getWorldPosition().y);
+		bodyDefinition.position.set(screen.tasks.getLocations().get(0).getWorldPosition().x,screen.tasks.getLocations().get(0).getWorldPosition().y);
 		bodyDefinition.type = BodyDef.BodyType.DynamicBody;
 		box2dBody = world.createBody(bodyDefinition);
 		FixtureDef fixtureDefinition = new FixtureDef();

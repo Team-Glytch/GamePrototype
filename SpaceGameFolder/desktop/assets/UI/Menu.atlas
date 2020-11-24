@@ -1,0 +1,19 @@
+
+Menu.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ExitButton
+  rotate: false
+  xy: 1, 1
+  size: 466, 91
+  orig: 466, 91
+  offset: 0, 0
+  index: -1
+StartButton
+  rotate: false
+  xy: 469, 1
+  size: 462, 91
+  orig: 462, 91
+  offset: 0, 0
+  index: -1

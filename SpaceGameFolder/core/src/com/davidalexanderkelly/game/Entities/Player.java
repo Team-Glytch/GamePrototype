@@ -109,10 +109,18 @@ public class Player extends Sprite{
 		FixtureDef fixtureDefinition = new FixtureDef();
 		CircleShape shape = new CircleShape();
 		shape.setRadius(5 / SpaceGamePrototype.PixelsPerMetre);	
-		
+		fixtureDefinition.filter.categoryBits = SpaceGamePrototype.PLAYER_BIT;
+		fixtureDefinition.filter.maskBits = SpaceGamePrototype.DEFAULT_BIT | SpaceGamePrototype.TELEPORTER_BIT;
 		fixtureDefinition.shape = shape;
-
+		
 		box2dBody.createFixture(fixtureDefinition);
+		
+		CircleShape sensor = new CircleShape();
+		sensor.setRadius(6 / SpaceGamePrototype.PixelsPerMetre);
+		fixtureDefinition.shape = sensor;
+		fixtureDefinition.isSensor = true;
+		box2dBody.createFixture(fixtureDefinition).setUserData("player");
+		
 	}
 	
 
