@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.davidalexanderkelly.game.Screens.MainMenuScreen;
 import com.davidalexanderkelly.game.Screens.PlayScreen;
+import com.davidalexanderkelly.game.Tools.MenuCamera;
 
 public class SpaceGamePrototype extends Game {
 	
@@ -17,14 +19,20 @@ public class SpaceGamePrototype extends Game {
 	public static final int V_HEIGHT = 720;
 	public static final float PixelsPerMetre = 100;
 	
-	public SpriteBatch batch;
+	public static final short DEFAULT_BIT = 1;
+	public static final short PLAYER_BIT =2;
+	public static final short TELEPORTER_BIT = 4;
 	
+	public SpriteBatch batch;
+	public MenuCamera cam;
 	
 	@Override
 	public void create () {
 		// Sets level
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		cam = new MenuCamera(V_WIDTH, V_HEIGHT);
+		
+		setScreen(new MainMenuScreen(this));
 	}
 
 	@Override
