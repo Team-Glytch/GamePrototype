@@ -41,8 +41,10 @@ import com.davidalexanderkelly.game.Entities.Behaviors.Pathfinding;
 import com.davidalexanderkelly.game.Scenes.Hud;
 import com.davidalexanderkelly.game.Tools.Assets;
 import com.davidalexanderkelly.game.Tools.Box2DWorldCreator;
-import com.davidalexanderkelly.game.Tools.InteractableWorldCreator;
 import com.davidalexanderkelly.game.Tools.PathfindingWorldCreator;
+import com.davidalexanderkelly.game.Tools.TaskWorldCreator;
+import com.davidalexanderkelly.game.Tools.InteractiveWorldCreator;
+import com.davidalexanderkelly.game.Tools.WorldContactListener;
 import com.davidalexanderkelly.game.Tools.EnemyUpdater;
 
 public class PlayScreen implements Screen {
@@ -74,7 +76,8 @@ public class PlayScreen implements Screen {
 	private Box2DDebugRenderer collisionRenderer;
 	
 	public PathfindingWorldCreator pathfinder;
-	public InteractableWorldCreator interactables;
+	public TaskWorldCreator tasks;
+	public InteractiveWorldCreator teleporters;
 
 	private Assets assets;
 	private Player player;
@@ -100,16 +103,18 @@ public class PlayScreen implements Screen {
 		
 		//Game camera position and zoom level
 		gamecam.position.set(gamePort.getWorldWidth() /2 , gamePort.getWorldHeight() /2,0);
-		gamecam.zoom = 0.2f;
+		gamecam.zoom = 0.15f;
 		
 		//Creates the collision world
 		world = new World(new Vector2(0,0), true);
 		
-		interactables = new InteractableWorldCreator(map);
-		interactables.setLocations();
+		tasks = new TaskWorldCreator(map);
+		tasks.setLocations();
 		
 		pathfinder = new PathfindingWorldCreator(map);
 		pathfinder.setLocations();
+		
+		teleporters = new InteractiveWorldCreator(this);
 		
 		
 		
@@ -132,6 +137,8 @@ public class PlayScreen implements Screen {
 		//creates Player in the world
 		player = new Player(world,this );
 		enemy = new Enemy(world,this);
+		
+		world.setContactListener(new WorldContactListener());
 
 
 				
@@ -212,6 +219,9 @@ public class PlayScreen implements Screen {
 		player.draw(game.batch);
 		enemy.draw(game.batch);
 		game.batch.end();
+		
+		 game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+	        hud.stage.draw();
 	}
 	
 	public TiledMap getMap() {
